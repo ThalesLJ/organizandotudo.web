@@ -5,7 +5,7 @@ import IUserData from "../types/IUserData";
 import INote from "../types/INote";
 import INotes from "../types/INotes";
 
-const baseURL = 'https://data.mongodb-api.com/app/application-0-mqvuy/endpoint';
+const baseURL = 'https://organizandotudo-api.netlify.app/api';
 
 class Api {
     async CreateAccount(data: IUserData): Promise<IResponse> {
