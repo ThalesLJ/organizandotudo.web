@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Api from '../../services/Api';
 import Auth from '../../context/Auth';
 import INote from '../../types/INote';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import FormInput from "../../components/FormInput";
@@ -173,12 +173,24 @@ export default function EditNote() {
                   <Row>
                     <Col xs={12} sm={6} md={6} lg={6}>
                       <CustomButton onClick={SaveAndKeep} className='login-btnAcessar' variant="contained" disabled={!hasChanges} type="button" >
-                        {isSavingKeep ? (<CircularProgress size={24} color="inherit" />) : (strings.editNote_btnSave)}
+                        {isSavingKeep ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <CircularProgress size={25} sx={{ color: 'white' }} />
+                          </Box>
+                        ) : (
+                          strings.editNote_btnSave
+                        )}
                       </CustomButton>
                     </Col>
                     <Col xs={12} sm={6} md={6} lg={6}>
                       <CustomButton onClick={SaveAndExit} className='login-btnAcessar' variant="contained" disabled={!hasChanges} type="button" >
-                        {isSavingExit ? (<CircularProgress size={24} color="inherit" />) : (strings.editNote_btnSaveAndClose)}
+                        {isSavingExit ? (
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <CircularProgress size={25} sx={{ color: 'white' }} />
+                          </Box>
+                        ) : (
+                          strings.editNote_btnSaveAndClose
+                        )}
                       </CustomButton>
                     </Col>
                   </Row>

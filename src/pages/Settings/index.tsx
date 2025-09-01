@@ -4,7 +4,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useColors } from "../../context/ColorContext";
 import { AnimatePresence, motion } from 'framer-motion';
 import { Form } from 'react-bootstrap';
-import { CircularProgress, Grid, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
+import { Box, CircularProgress, Grid, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
 import Auth from '../../context/Auth';
 import Api from '../../services/Api';
 import FormInput from "../../components/FormInput";
@@ -125,7 +125,13 @@ export default function Settings() {
                 onChange={(e) => setCurrentPassword(e.target.value)} label={strings.settings_currentPassword} type="password" />
             )}
             <FormButton>
-              {isSaving ? (<CircularProgress size={24} color="inherit" />) : (strings.settings_btnSaveChanges)}
+              {isSaving ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <CircularProgress size={24} sx={{ color: 'white' }} />
+                </Box>
+              ) : (
+                strings.settings_btnSaveChanges
+              )}
             </FormButton>
           </Form>
         );

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useColors } from "../../context/ColorContext";
 import { AnimatePresence, motion } from 'framer-motion';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
@@ -46,7 +46,10 @@ export default function Login() {
       .then((result) => {
         if (result.token) {
           Auth.login({ username: result.username, email: result.email, token: result.token });
-          if (result.token != null) navigate("/Notes");
+          if (result.token != null) {
+            setIsLogging(false);
+            navigate("/Notes");
+          }
         } else {
           setAlertMessage(strings.login_AccountNotFound);
           setShowAlert(true);
@@ -92,7 +95,13 @@ export default function Login() {
 
             <br />
             <CustomButton type='submit' className='login-btnAcessar' variant="contained" width="80%">
-              {isLogging ? (<CircularProgress size={24} color="inherit" />) : (strings.login_btnLogin)}
+              {isLogging ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <CircularProgress size={24} sx={{ color: 'white' }} />
+                </Box>
+              ) : (
+                strings.login_btnLogin
+              )}
             </CustomButton>
           </form>
 
