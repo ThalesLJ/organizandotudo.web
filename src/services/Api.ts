@@ -9,7 +9,7 @@ import IApiError from "../types/IApiError";
 import ICreateNote from "../types/ICreateNote";
 import IUpdateNote from "../types/IUpdateNote";
 
-const baseURL = 'http://ec2-98-87-120-53.compute-1.amazonaws.com:8080';
+const baseURL = 'https://organizandotudo.api.thaleslj.com/api';
 
 class Api {
     private getAuthHeaders(token: string) {
