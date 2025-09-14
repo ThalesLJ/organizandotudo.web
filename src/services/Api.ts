@@ -4,128 +4,156 @@ import IUser from "../types/IUser";
 import IUserData from "../types/IUserData";
 import INote from "../types/INote";
 import INotes from "../types/INotes";
+import IAuthResponse from "../types/IAuthResponse";
+import IApiError from "../types/IApiError";
+import ICreateNote from "../types/ICreateNote";
+import IUpdateNote from "../types/IUpdateNote";
 
-const baseURL = 'https://organizandotudo-api.netlify.app/api';
+const baseURL = 'http://ec2-98-87-120-53.compute-1.amazonaws.com:8080';
 
 class Api {
+    private getAuthHeaders(token: string) {
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+    }
+
     async CreateAccount(data: IUserData): Promise<IResponse> {
         try {
-            let response = await fetch(`${baseURL}/CreateAccount`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                }
-            );
+            const response = await fetch(`${baseURL}/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-            let result: IResponse = await response.json();
-            return result;
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            await response.json();
+            return { 
+                pt: { message: "Usuário criado com sucesso", code: "Success" }, 
+                en: { message: "User created successfully", code: "Success" } 
+            };
         } catch (ex) {
             return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
     }
 
-    async Login(data: ILogin): Promise<IUser> {
+    async Login(data: ILogin): Promise<IAuthResponse> {
         try {
-            let response = await fetch(`${baseURL}/Login`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                }
-            );
+            const response = await fetch(`${baseURL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-            let result: IUser = await response.json();
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                throw new Error(error.message);
+            }
+
+            const result: IAuthResponse = await response.json();
             return result;
         } catch (ex) {
-            return { token: "", username: "", email: "" };
+            throw ex;
         }
     }
 
-    VerifyToken(data: IUser): IResponse {
-        let result: IResponse;
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', `${baseURL}/VerifyToken`, false);  // false = the request is synchronous
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Authorization', `${data.token}`);
-        
-        result = { 
-            pt: { message: 'Falha ao verificar o token', code: "Falha" }, 
-            en: { message: 'Error verifying token', code: "Error" } 
-        };
 
+    async GetUser(token: string): Promise<IUser> {
         try {
-            xhr.send(JSON.stringify(data));
-            if (xhr.status === 200) {
-                result = JSON.parse(xhr.responseText);
+            const response = await fetch(`${baseURL}/users/profile`, {
+                method: 'GET',
+                headers: this.getAuthHeaders(token)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
             }
-        } catch (ex) { }
-        
-        return result;
-    }
 
-    async GetUser(data: IUser): Promise<IUserData> {
-        try {
-            let response = await fetch(`${baseURL}/User`,
-                {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${data.token}` }
-                }
-            );
-
-            let result: IUserData = await response.json();
+            const result: IUser = await response.json();
             return result;
         } catch (ex) {
-            return { username: '', email: '', password: '' };
+            throw ex;
         }
     }
 
     async UpdateUser(data: IUserData, token: string): Promise<IResponse> {
         try {
-            let response = await fetch(`${baseURL}/User`,
-                {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` },
-                    body: JSON.stringify({ data: data })
-                }
-            );
+            const response = await fetch(`${baseURL}/users/profile`, {
+                method: 'PUT',
+                headers: this.getAuthHeaders(token),
+                body: JSON.stringify(data)
+            });
 
-            let result: IResponse = await response.json();
-            return result;
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Perfil atualizado com sucesso", code: "Success" }, 
+                en: { message: "Profile updated successfully", code: "Success" } 
+            };
         } catch (ex) {
             return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
     }
 
-    async CreateNote(data: INote, token: string): Promise<IResponse> {
+    async CreateNote(data: ICreateNote, token: string): Promise<IResponse> {
         try {
-            let response = await fetch(`${baseURL}/Note`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` },
-                    body: JSON.stringify({ note: data })
-                }
-            );
+            const response = await fetch(`${baseURL}/notes`, {
+                method: 'POST',
+                headers: this.getAuthHeaders(token),
+                body: JSON.stringify(data)
+            });
 
-            let result: IResponse = await response.json();
-            return result;
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Nota criada com sucesso", code: "Success" }, 
+                en: { message: "Note created successfully", code: "Success" } 
+            };
         } catch (ex) {
             return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
     }
 
-    async UpdateNote(data: INote, id: string, token: string): Promise<IResponse> {
+    async UpdateNote(data: IUpdateNote, id: string, token: string): Promise<IResponse> {
         try {
-            let response = await fetch(`${baseURL}/Note?id=${id}`,
-                {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` },
-                    body: JSON.stringify({ newNote: data })
-                }
-            );
+            const response = await fetch(`${baseURL}/notes/${id}`, {
+                method: 'PATCH',
+                headers: this.getAuthHeaders(token),
+                body: JSON.stringify(data)
+            });
 
-            let result: IResponse = await response.json();
-            return result;
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Nota atualizada com sucesso", code: "Success" }, 
+                en: { message: "Note updated successfully", code: "Success" } 
+            };
         } catch (ex) {
             return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
@@ -133,15 +161,23 @@ class Api {
 
     async DeleteNote(id: string, token: string): Promise<IResponse> {
         try {
-            let response = await fetch(`${baseURL}/Note?id=${id}`,
-                {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` }
-                }
-            );
+            const response = await fetch(`${baseURL}/notes/${id}`, {
+                method: 'DELETE',
+                headers: this.getAuthHeaders(token)
+            });
 
-            let result: IResponse = await response.json();
-            return result;
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Nota deletada com sucesso", code: "Success" }, 
+                en: { message: "Note deleted successfully", code: "Success" } 
+            };
         } catch (ex) {
             return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
@@ -149,15 +185,23 @@ class Api {
 
     async PublishNote(id: string, token: string): Promise<IResponse> {
         try {
-            let response = await fetch(`${baseURL}/PublishNote?id=${id}`,
-                {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` }
-                }
-            );
+            const response = await fetch(`${baseURL}/notes/${id}/toggle-public`, {
+                method: 'PATCH',
+                headers: this.getAuthHeaders(token)
+            });
 
-            let result: IResponse = await response.json();
-            return result;
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Visibilidade da nota alterada com sucesso", code: "Success" }, 
+                en: { message: "Note visibility changed successfully", code: "Success" } 
+            };
         } catch (ex) {
             return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
@@ -165,47 +209,58 @@ class Api {
 
     async GetNote(id: string, token: string): Promise<INote> {
         try {
-            let response = await fetch(`${baseURL}/Note?id=${id}`,
-                {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` }
-                }
-            );
+            const response = await fetch(`${baseURL}/notes/${id}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders(token)
+            });
 
-            let result: INote = await response.json();
+            if (!response.ok) {
+                throw new Error('Failed to fetch note');
+            }
+
+            const result: INote = await response.json();
             return result;
         } catch (ex) {
-            return { id: '', title: `${ex}`, content: "Error" };
+            throw ex;
         }
     }
 
     async GetPublicNote(id: string): Promise<INote> {
         try {
-            let response = await fetch(`${baseURL}/Note?id=${id}`,
-                {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                }
-            );
+            const response = await fetch(`${baseURL}/notes/${id}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-            let result: INote = await response.json();
+            if (!response.ok) {
+                throw new Error('Failed to fetch public note');
+            }
+
+            const result: INote = await response.json();
             return result;
         } catch (ex) {
-            return { id: '', title: `${ex}`, content: "Error" };
+            throw ex;
         }
     }
 
-    async GetNotes(token: string): Promise<INotes[]> {
+    async GetNotes(token: string, page: number = 1, limit: number = 100, search?: string): Promise<INotes[]> {
         try {
-            let response = await fetch(`${baseURL}/Notes`,
-                {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `${token}` }
-                }
-            );
+            let url = `${baseURL}/notes?page=${page}&limit=${limit}`;
+            if (search) {
+                url += `&search=${encodeURIComponent(search)}`;
+            }
 
-            let result: INotes[] = await response.json();
-            return result;
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: this.getAuthHeaders(token)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch notes');
+            }
+
+            const result = await response.json();
+            return result.notes || [];
         } catch (ex) {
             return [];
         }

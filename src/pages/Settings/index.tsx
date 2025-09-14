@@ -29,6 +29,7 @@ export default function Settings() {
   const [isReloading, setIsReloading] = useState<boolean>(false);
 
   const formRef = useRef<HTMLFormElement>(null);
+  const hasLoaded = React.useRef(false);
   const hasChanges = username !== initialUsername || email !== initialEmail;
 
   // Function to reset global colors to default
@@ -63,31 +64,32 @@ export default function Settings() {
       setIsDarkMode(JSON.parse(savedDarkMode));
     }
 
-    // Get user data to be shown in the form (username and email)
-    Api.GetUser(Auth.user)
-      .then((user) => {
-        setUsername(user.username);
-        setInitialUsername(user.username);
-        setEmail(user.email);
-        setInitialEmail(user.email);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch user data: ', error);
-      });
+    // Get user data to be shown in the form (username and email) - only once
+    if (!hasLoaded.current && Auth.token) {
+      hasLoaded.current = true;
+      Api.GetUser(Auth.token)
+        .then((user) => {
+          setUsername(user.username);
+          setInitialUsername(user.username);
+          setEmail(user.email);
+          setInitialEmail(user.email);
+        })
+        .catch((error) => {
+        });
+    }
   }, [setColors]);
 
   // Send new user data to the API (username and email only)
   const handleSave = useCallback(() => {
     setIsSaving(true);
 
-    Api.UpdateUser({ username, email, password: currentPassword }, Auth.user.token)
+    Api.UpdateUser({ username, email, password: currentPassword }, Auth.token)
       .then(() => {
         setInitialUsername(username);
         setInitialEmail(email);
         setIsSaving(false);
       })
       .catch((error) => {
-        console.error('Error updating user: ', error);
         setIsSaving(false);
       });
   }, [username, email, currentPassword]);

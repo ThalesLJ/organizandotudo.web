@@ -10,6 +10,7 @@ import ReactQuill from "react-quill";
 import FormButton from '../../components/FormButton';
 import FormInput from "../../components/FormInput";
 import { AnimatePresence, motion } from "framer-motion";
+import ICreateNote from "../../types/ICreateNote";
 
 export default function CreateNote() {
   const { strings } = useLanguage();
@@ -23,7 +24,8 @@ export default function CreateNote() {
   const Save = useCallback(() => {
     setIsSaving(true);
 
-    Api.CreateNote({ id: '', title, content }, Auth.user.token)
+    const noteData: ICreateNote = { title, content, isPublic: false };
+    Api.CreateNote(noteData, Auth.token)
       .then((result) => {
         navigate("/Notes");
         setIsSaving(false);

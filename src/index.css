@@ -310,7 +310,7 @@ code {
   resize: vertical;
   overflow: auto;
   min-height: 200px;
-  max-height: 1000px;
+  max-height: 660px;
   background-color: white !important;
 }
 
@@ -349,7 +349,7 @@ span.ql-picker-label {
   resize: vertical;
   overflow: auto;
   min-height: 200px;
-  max-height: 1000px;
+  max-height: 660px;
   background-color: var(--background) !important;
   border-color: var(--primary) !important;
 }

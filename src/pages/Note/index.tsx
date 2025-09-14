@@ -15,7 +15,7 @@ export default function Note() {
   const { strings } = useLanguage();
 
   const { id } = useParams<Record<string, string | undefined>>();
-  const [note, setNote] = useState<INote>({ id: '', title: '', content: '' });
+  const [note, setNote] = useState<INote>({ id: '', title: '', content: '', isPublic: false, createdAt: '', updatedAt: '' });
   const [loading, setLoading] = React.useState(true);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -36,7 +36,6 @@ export default function Note() {
         })
         .catch((error) => {
           if (isMounted) {
-            console.error('Promise rejected with error: ' + error);
             setLoading(false);
           }
         });

@@ -22,19 +22,26 @@ export default function Notes() {
   const [sortOrder, setSortOrder] = React.useState<'title' | 'date'>('date');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [contextMenu, setContextMenu] = React.useState<{ show: boolean, x: number, y: number, noteId: string | null }>({ show: false, x: 0, y: 0, noteId: null });
+  const hasLoaded = React.useRef(false);
 
-  // On page load: Get notes from the API
+  // On page load: Get notes from the API (only once)
   React.useEffect(() => {
-    Api.GetNotes(Auth.user.token)
-      .then((result) => {
-        setNotes(result);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        alert('Promise rejected with error: ' + error);
-      });
+    if (!hasLoaded.current && Auth.token) {
+      hasLoaded.current = true;
+      Api.GetNotes(Auth.token, 1, 100)
+        .then((result) => {
+          setNotes(result);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          alert('Promise rejected with error: ' + error);
+          setIsLoading(false);
+        });
+    }
+  }, [Auth.token]);
 
-    // Event listener: Closes the context menu when clicking outside
+  // Event listener: Closes the context menu when clicking outside
+  React.useEffect(() => {
     const handleClickOutside = () => setContextMenu({ show: false, x: 0, y: 0, noteId: null });
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
@@ -42,10 +49,15 @@ export default function Notes() {
 
   // On search, filter or sort field change
   React.useEffect(() => {
+    if (!notes || !Array.isArray(notes)) {
+      setFilteredNotes([]);
+      return;
+    }
+
     let filtered = notes;
 
     if (filter !== 'all') {
-      filtered = notes.filter(note => note.public === (filter === 'public'));
+      filtered = notes.filter(note => note.isPublic === (filter === 'public'));
     }
 
     if (searchQuery) {
@@ -63,26 +75,29 @@ export default function Notes() {
       });
     } else if (sortOrder === 'date') {
       if (filtered.length > 0)
-        filtered = filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        filtered = filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
-    if (filtered.length > 0)
-      setFilteredNotes(filtered);
+    
+    setFilteredNotes(filtered);
   }, [notes, filter, sortOrder, searchQuery]);
 
   // Toggle note visibility
-  const PublicNote = (noteId: string, visible: boolean) => {
+  const PublicNote = (noteId: string, isPublic: boolean) => {
     // Toggle note visibility in state
-    setNotes(prevNotes =>
-      prevNotes.map(note =>
-        note.id === noteId ? { ...note, visible: !visible } : note
-      )
-    );
+    setNotes(prevNotes => {
+      if (!prevNotes || !Array.isArray(prevNotes)) {
+        return [];
+      }
+      return prevNotes.map(note =>
+        note.id === noteId ? { ...note, isPublic: !isPublic } : note
+      );
+    });
 
     // Toggle note visibility in API
     if (noteId) {
-      Api.PublishNote(noteId, Auth.user.token)
+      Api.PublishNote(noteId, Auth.token)
         .then((result) => {
-          Api.GetNotes(Auth.user.token)
+          Api.GetNotes(Auth.token, 1, 100)
             .then((result) => {
               setNotes(result);
             })
@@ -108,9 +123,9 @@ export default function Notes() {
 
     // Delete note from API
     if (noteId) {
-      Api.DeleteNote(noteId, Auth.user.token)
+      Api.DeleteNote(noteId, Auth.token)
         .then((result) => {
-          Api.GetNotes(Auth.user.token)
+          Api.GetNotes(Auth.token, 1, 100)
             .then((result) => {
               setNotes(result);
             })
@@ -169,7 +184,7 @@ export default function Notes() {
                           <CircularProgress size={24} color="inherit" />
                         </Col>
                       </Row>
-                    ) : filteredNotes.length === 0 ? (
+                    ) : !filteredNotes || filteredNotes.length === 0 ? (
                       <Row>
                         <Col className="d-flex justify-content-center" style={{ marginTop: '1rem' }}></Col>
                       </Row>

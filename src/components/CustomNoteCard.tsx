@@ -10,7 +10,7 @@ interface NoteCardProps {
     id: string;
     title: string;
     content: string;
-    public: boolean;
+    isPublic: boolean;
   };
   onContextMenu: (e: React.MouseEvent, id: string) => void;
   onPublicToggle: (id: string, isPublic: boolean) => void;
@@ -32,7 +32,7 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onContextMenu, onPublicToggle
         <Card.Footer className="text-muted note-card-footer">
           <div className="note-footer">
             <div className="note-leftFooter">
-              {note.public && (
+              {note.isPublic && (
                 <span id="link-icon">
                   <Link to={`/Note/${note.id}`} style={{ textDecoration: 'none' }}>
                     <RxExternalLink />
@@ -41,8 +41,8 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onContextMenu, onPublicToggle
               )}
             </div>
             <div className="note-rightFooter">
-              <span id="lock-icon" onClick={() => onPublicToggle(note.id, note.public)}>
-                {note.public ? <IoLockOpen /> : <IoLockClosed />}
+              <span id="lock-icon" onClick={() => onPublicToggle(note.id, note.isPublic)}>
+                {note.isPublic ? <IoLockOpen /> : <IoLockClosed />}
               </span>
               <span id="trash-icon" onClick={() => onDelete(note.id)}>
                 <FaTrash />

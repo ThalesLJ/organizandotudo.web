@@ -44,17 +44,9 @@ export default function Login() {
 
     Api.Login(login)
       .then((result) => {
-        if (result.token) {
-          Auth.login({ username: result.username, email: result.email, token: result.token });
-          if (result.token != null) {
-            setIsLogging(false);
-            navigate("/Notes");
-          }
-        } else {
-          setAlertMessage(strings.login_AccountNotFound);
-          setShowAlert(true);
-          setIsLogging(false);
-        }
+        Auth.login(result);
+        setIsLogging(false);
+        navigate("/Notes");
       })
       .catch((e) => {
         setAlertMessage(strings.login_AccountNotFound);
@@ -75,7 +67,7 @@ export default function Login() {
           <span className='login-txtTitulo'>{strings.login_title}</span>
 
           <form onSubmit={Login}>
-            <FormInput label={strings.login_username} type='text' required width="80%"
+            <FormInput label={strings.login_username || "Username"} type='text' required width="80%"
               onChange={(e) => { setUsername(e.target.value) }}
             />
 

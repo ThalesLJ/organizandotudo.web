@@ -6,6 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Api from '../../services/Api';
 import Auth from '../../context/Auth';
 import INote from '../../types/INote';
+import IUpdateNote from '../../types/IUpdateNote';
 import { Box, CircularProgress } from '@mui/material';
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
@@ -18,7 +19,7 @@ export default function EditNote() {
   const navigate = useNavigate();
 
   const { id } = useParams<Record<string, string | undefined>>();
-  const [note, setNote] = useState<INote>({ id: '', title: '', content: '' });
+  const [note, setNote] = useState<INote>({ id: '', title: '', content: '', isPublic: false, createdAt: '', updatedAt: '' });
   const [loading, setLoading] = React.useState(true);
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
@@ -43,9 +44,10 @@ export default function EditNote() {
     }
 
     if (id) {
-      Api.UpdateNote({ id, title: titleRef.current, content: contentRef.current }, id, Auth.user.token)
+      const updateData: IUpdateNote = { title: titleRef.current, content: contentRef.current, isPublic: note.isPublic };
+      Api.UpdateNote(updateData, id, Auth.token)
         .then((result) => {
-          setNote({ id, title: titleRef.current, content: contentRef.current });
+          setNote({ id, title: titleRef.current, content: contentRef.current, isPublic: note.isPublic, createdAt: note.createdAt, updatedAt: note.updatedAt });
           setInitialTitle(titleRef.current);
           setInitialContent(contentRef.current);
           if (!keepAfterSave) navigate("/Notes");
@@ -82,7 +84,7 @@ export default function EditNote() {
     let isMounted = true;
 
     if (id) {
-      Api.GetNote(id, Auth.user.token)
+      Api.GetNote(id, Auth.token)
         .then((result) => {
           if (isMounted) {
             setNote(result);
@@ -95,7 +97,6 @@ export default function EditNote() {
         })
         .catch((error) => {
           if (isMounted) {
-            console.error('Promise rejected with error: ' + error);
             setLoading(false);
           }
         });
