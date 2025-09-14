@@ -1,7 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import IUser from "../types/IUser";
 import IAuthResponse from "../types/IAuthResponse";
-import Api from "../services/Api";
 
 class Auth {
     user: IUser = { id: "", username: "", email: "", createdAt: "", updatedAt: "" };

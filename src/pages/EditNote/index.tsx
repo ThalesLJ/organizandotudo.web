@@ -60,7 +60,7 @@ export default function EditNote() {
           alert('Promise rejected with error: ' + error);
         });
     }
-  }, [id, navigate]);
+  }, [id, navigate, note.createdAt, note.isPublic, note.updatedAt]);
 
   const SaveRef = useRef(Save);
 

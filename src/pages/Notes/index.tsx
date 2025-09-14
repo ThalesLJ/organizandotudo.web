@@ -38,7 +38,7 @@ export default function Notes() {
           setIsLoading(false);
         });
     }
-  }, [Auth.token]);
+  }, []);
 
   // Event listener: Closes the context menu when clicking outside
   React.useEffect(() => {
