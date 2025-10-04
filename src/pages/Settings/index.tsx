@@ -4,11 +4,11 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useColors } from "../../context/ColorContext";
 import { AnimatePresence, motion } from 'framer-motion';
 import { Form } from 'react-bootstrap';
-import { Box, CircularProgress, Grid, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
+import { Grid, Typography, Paper, List, ListItem, ListItemText } from "@mui/material";
 import Auth from '../../context/Auth';
 import Api from '../../services/Api';
 import FormInput from "../../components/FormInput";
-import FormButton from "../../components/FormButton";
+import FormLoadingButton from "../../components/FormLoadingButton";
 import LanguageFloatingButton from "../../components/LanguageFloatingBtn";
 import CustomColorPicker from "../../components/CustomColorPicker";
 import colorsJSON from '../../global/colors.json';
@@ -126,15 +126,9 @@ export default function Settings() {
               <FormInput value={currentPassword} placeholder={strings.settings_currentPasswordPlaceholder} required
                 onChange={(e) => setCurrentPassword(e.target.value)} label={strings.settings_currentPassword} type="password" />
             )}
-            <FormButton>
-              {isSaving ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <CircularProgress size={24} sx={{ color: 'white' }} />
-                </Box>
-              ) : (
-                strings.settings_btnSaveChanges
-              )}
-            </FormButton>
+            <FormLoadingButton isLoading={isSaving}>
+              {strings.settings_btnSaveChanges}
+            </FormLoadingButton>
           </Form>
         );
       case 'appearance':

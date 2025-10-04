@@ -26,7 +26,14 @@ const NoteCard: React.FC<NoteCardProps> = ({ note, onContextMenu, onPublicToggle
             <Card.Title className="note-title">{note.title}</Card.Title>
           </Link>
           <div className="note-text-container">
-            <Card.Text className="note-content" dangerouslySetInnerHTML={{ __html: note.content }} />
+            {note.isPublic ? (
+              <Card.Text className="note-content" dangerouslySetInnerHTML={{ __html: note.content }} />
+            ) : (
+              <Card.Text className="note-content note-content-private">
+                <IoLockClosed style={{ marginRight: 8 }} />
+                Conteúdo privado
+              </Card.Text>
+            )}
           </div>
         </Card.Body>
         <Card.Footer className="text-muted note-card-footer">

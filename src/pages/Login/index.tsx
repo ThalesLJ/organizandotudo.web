@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useColors } from "../../context/ColorContext";
 import { AnimatePresence, motion } from 'framer-motion';
-import { CircularProgress, Box } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
@@ -14,10 +13,10 @@ import { useNavigate } from "react-router-dom";
 import Api from '../../services/Api';
 import Auth from '../../context/Auth';
 import CustomAlert from "../../components/CustomAlert";
-import CustomButton from "../../components/CustomButton";
 import CustomLink from "../../components/CustomLink";
 import FormInput from "../../components/FormInput";
 import LanguageFloatingButton from "../../components/LanguageFloatingBtn";
+import LoadingButton from "../../components/LoadingButton";
 
 export default function Login() {
   const { strings } = useLanguage();
@@ -86,15 +85,15 @@ export default function Login() {
             />
 
             <br />
-            <CustomButton type='submit' className='login-btnAcessar' variant="contained" width="80%">
-              {isLogging ? (
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <CircularProgress size={24} sx={{ color: 'white' }} />
-                </Box>
-              ) : (
-                strings.login_btnLogin
-              )}
-            </CustomButton>
+            <LoadingButton 
+              type='submit' 
+              className='login-btnAcessar' 
+              variant="contained" 
+              width="80%"
+              isLoading={isLogging}
+            >
+              {strings.login_btnLogin}
+            </LoadingButton>
           </form>
 
           <div className="login-redirects">

@@ -7,11 +7,11 @@ import Api from '../../services/Api';
 import Auth from '../../context/Auth';
 import INote from '../../types/INote';
 import IUpdateNote from '../../types/IUpdateNote';
-import { Box, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 import FormInput from "../../components/FormInput";
-import CustomButton from "../../components/CustomButton";
+import LoadingButton from "../../components/LoadingButton";
 import { AnimatePresence, motion } from "framer-motion";
 
 export default function EditNote() {
@@ -173,26 +173,28 @@ export default function EditNote() {
                 <Form.Group controlId="formSave" className="mt-3">
                   <Row>
                     <Col xs={12} sm={6} md={6} lg={6}>
-                      <CustomButton onClick={SaveAndKeep} className='login-btnAcessar' variant="contained" disabled={!hasChanges} type="button" >
-                        {isSavingKeep ? (
-                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <CircularProgress size={25} sx={{ color: 'white' }} />
-                          </Box>
-                        ) : (
-                          strings.editNote_btnSave
-                        )}
-                      </CustomButton>
+                      <LoadingButton 
+                        onClick={SaveAndKeep} 
+                        className='login-btnAcessar' 
+                        variant="contained" 
+                        disabled={!hasChanges} 
+                        type="button"
+                        isLoading={isSavingKeep}
+                      >
+                        {strings.editNote_btnSave}
+                      </LoadingButton>
                     </Col>
                     <Col xs={12} sm={6} md={6} lg={6}>
-                      <CustomButton onClick={SaveAndExit} className='login-btnAcessar' variant="contained" disabled={!hasChanges} type="button" >
-                        {isSavingExit ? (
-                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <CircularProgress size={25} sx={{ color: 'white' }} />
-                          </Box>
-                        ) : (
-                          strings.editNote_btnSaveAndClose
-                        )}
-                      </CustomButton>
+                      <LoadingButton 
+                        onClick={SaveAndExit} 
+                        className='login-btnAcessar' 
+                        variant="contained" 
+                        disabled={!hasChanges} 
+                        type="button"
+                        isLoading={isSavingExit}
+                      >
+                        {strings.editNote_btnSaveAndClose}
+                      </LoadingButton>
                     </Col>
                   </Row>
                 </Form.Group>

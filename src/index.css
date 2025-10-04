@@ -678,7 +678,7 @@ span.ql-picker-label {
 }
 
 .note-text-container p {
-  user-select: auto !important;
+  user-select: auto;
 }
 
 .note-card-footer {
@@ -706,6 +706,19 @@ span.ql-picker-label {
   min-height: 200px;
   max-height: 500px;
   user-select: auto !important;
+}
+
+.note-content-private {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondaryText) !important;
+  background: repeating-linear-gradient(45deg, rgba(0,0,0,0.03), rgba(0,0,0,0.03) 10px, transparent 10px, transparent 20px);
+  border: 1px dashed var(--secondaryTextTint);
+  border-radius: 6px;
+  height: 200px;
+  min-height: 200px;
+  user-select: none !important;
 }
 
 .note-content p {
