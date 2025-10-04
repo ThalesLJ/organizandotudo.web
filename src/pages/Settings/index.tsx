@@ -126,7 +126,7 @@ export default function Settings() {
               <FormInput value={currentPassword} placeholder={strings.settings_currentPasswordPlaceholder} required
                 onChange={(e) => setCurrentPassword(e.target.value)} label={strings.settings_currentPassword} type="password" />
             )}
-            <FormLoadingButton isLoading={isSaving}>
+            <FormLoadingButton width="100%" isLoading={isSaving}>
               {strings.settings_btnSaveChanges}
             </FormLoadingButton>
           </Form>

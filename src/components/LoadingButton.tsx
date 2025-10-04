@@ -9,9 +9,10 @@ interface LoadingButtonProps {
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   variant?: 'contained' | 'outlined' | 'text';
-  width?: string;
+  width: string;
   disabled?: boolean;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const LoadingButton: React.FC<LoadingButtonProps> = ({
@@ -21,9 +22,10 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   onClick,
   type = 'button',
   variant = 'contained',
-  width = '100%',
+  width,
   disabled = false,
   className,
+  style,
   ...rest
 }) => {
   return (
@@ -31,10 +33,11 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
       type={type}
       variant={variant}
       onClick={onClick}
-      width={width}
       disabled={disabled || isLoading}
       className={className}
+      style={style}
       sx={{
+        width: {width},
         height: '36px',
         maxHeight: '36px',
         minHeight: '36px',

@@ -179,6 +179,7 @@ export default function EditNote() {
                         variant="contained" 
                         disabled={!hasChanges} 
                         type="button"
+                        width="100%"
                         isLoading={isSavingKeep}
                       >
                         {strings.editNote_btnSave}
@@ -191,6 +192,7 @@ export default function EditNote() {
                         variant="contained" 
                         disabled={!hasChanges} 
                         type="button"
+                        width="100%"
                         isLoading={isSavingExit}
                       >
                         {strings.editNote_btnSaveAndClose}

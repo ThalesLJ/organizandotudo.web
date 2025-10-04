@@ -75,7 +75,7 @@ export default function Notes() {
       });
     } else if (sortOrder === 'date') {
       if (filtered.length > 0)
-        filtered = filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        filtered = filtered.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
     }
     
     setFilteredNotes(filtered);

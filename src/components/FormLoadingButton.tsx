@@ -6,7 +6,7 @@ interface FormLoadingButtonProps {
     children: ReactNode;
     type?: 'button' | 'submit' | 'reset';
     variant?: 'contained' | 'outlined' | 'text';
-    width?: string;
+    width: string;
     isLoading?: boolean;
     disabled?: boolean;
     className?: string;
@@ -17,7 +17,7 @@ const FormLoadingButton: React.FC<FormLoadingButtonProps> = ({
     children, 
     type = 'submit', 
     variant = 'contained', 
-    width = '100%', 
+    width, 
     isLoading = false,
     disabled = false,
     className,

@@ -2,12 +2,11 @@ import "../../index.css";
 import { useLanguage } from '../../context/LanguageContext';
 import React, { useCallback, useState } from 'react';
 import { Container, Card, Form } from 'react-bootstrap';
-import { CircularProgress } from '@mui/material';
 import Api from "../../services/Api";
 import { useNavigate } from "react-router-dom";
 import Auth from "../../context/Auth";
 import ReactQuill from "react-quill";
-import FormButton from '../../components/FormButton';
+import LoadingButton from '../../components/LoadingButton';
 import FormInput from "../../components/FormInput";
 import { AnimatePresence, motion } from "framer-motion";
 import ICreateNote from "../../types/ICreateNote";
@@ -78,9 +77,14 @@ export default function CreateNote() {
                   <ReactQuill className="resizable-editor" value={content} onChange={OnContentChange} placeholder={strings.createNote_noteContentPlaceholder} />
                 </Form.Group>
 
-                <FormButton type="submit" disabled={isSaving}>
-                  {isSaving ? (<CircularProgress size={24} color="inherit" />) : (strings.createNote_btnSave)}
-                </FormButton>
+                <LoadingButton 
+                  type="submit" 
+                  width="100%"
+                  isLoading={isSaving}
+                  style={{ marginTop: '10px' }}
+                >
+                  {strings.createNote_btnSave}
+                </LoadingButton>
               </Form>
             </Card.Body>
           </Card>
