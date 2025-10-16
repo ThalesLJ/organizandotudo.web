@@ -54,6 +54,21 @@ code {
   margin-top: 10px;
 }
 
+/* Estilos para autofill do Chrome */
+.MuiOutlinedInput-root input:-webkit-autofill,
+.MuiOutlinedInput-root input:-webkit-autofill:hover,
+.MuiOutlinedInput-root input:-webkit-autofill:focus,
+.MuiOutlinedInput-root input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--background) inset !important;
+  -webkit-text-fill-color: var(--secondaryText) !important;
+  background-color: var(--background) !important;
+  background-clip: content-box !important;
+}
+
+.MuiOutlinedInput-root input:-webkit-autofill::first-line {
+  -webkit-text-fill-color: var(--secondaryText) !important;
+}
+
 .form-input-group label {
   align-self: flex-start;
   color: var(--primary) !important;
@@ -407,7 +422,6 @@ span.ql-picker-label {
 
 .login-txtRecuperar:hover {
   color: var(--primary);
-  text-decoration: underline;
 }
 
 .login-txtCriar {
@@ -593,7 +607,7 @@ span.ql-picker-label {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   font-size: 24px;
-  z-index: 1000;
+  z-index: -1000 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -814,7 +828,7 @@ span.ql-picker-label {
   background-color: var(--primary) !important;
   border: 1px solid var(--primary) !important;
   padding: 10px;
-  z-index: 1000;
+  z-index: -1000 !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -909,13 +923,57 @@ span.ql-picker-label {
     margin-right: 0;
     margin-bottom: 0.5rem;
   }
+
+  /* Ajustes para formulários em mobile */
+  .form-input-group > div {
+    width: 100% !important;
+  }
+
+  .login-btnAcessar {
+    width: 100% !important;
+  }
+
+  .login-redirects {
+    width: 100% !important;
+  }
+
+  /* Ajustes específicos para botões em mobile */
+  .MuiButton-root {
+    width: 100% !important;
+  }
+
+  .MuiButtonBase-root {
+    width: 100% !important;
+  }
 }
 
-@media (min-width: 475px) {
+@media (min-width: 475px) and (max-width: 768px) {
   .filter-sort-container {
     display: flex;
     justify-content: space-between;
     width: 100%;
+  }
+
+  /* Ajustes para tablets */
+  .form-input-group > div {
+    width: 100% !important;
+  }
+
+  .login-btnAcessar {
+    width: 100% !important;
+  }
+
+  .login-redirects {
+    width: 100% !important;
+  }
+
+  /* Ajustes específicos para botões em tablets */
+  .MuiButton-root {
+    width: 100% !important;
+  }
+
+  .MuiButtonBase-root {
+    width: 100% !important;
   }
 }
 

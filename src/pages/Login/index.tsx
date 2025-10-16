@@ -98,7 +98,7 @@ export default function Login() {
 
           <div className="login-redirects">
             <CustomLink to="/AddAccount" className='login-txtCriar'>{strings.login_create}</CustomLink>
-            {/*<CustomLink to="/RecoveryAccount" className='login-txtRecuperar'>{strings.login_recovery}</CustomLink>*/}
+            <CustomLink to="/RecoveryAccount" className='login-txtRecuperar'>{strings.login_recovery}</CustomLink>
           </div>
 
           <div className='login-rightsContainer'>

@@ -8,6 +8,8 @@ import IAuthResponse from "../types/IAuthResponse";
 import IApiError from "../types/IApiError";
 import ICreateNote from "../types/ICreateNote";
 import IUpdateNote from "../types/IUpdateNote";
+import ISendCode from "../types/ISendCode";
+import IVerifyCode from "../types/IVerifyCode";
 
 const baseURL = 'https://organizandotudo.api.thaleslj.com/api';
 
@@ -263,6 +265,56 @@ class Api {
             return result.notes || [];
         } catch (ex) {
             return [];
+        }
+    }
+
+    async SendCode(data: ISendCode): Promise<IResponse> {
+        try {
+            const response = await fetch(`${baseURL}/auth/send-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Código enviado com sucesso", code: "Success" }, 
+                en: { message: "Code sent successfully", code: "Success" } 
+            };
+        } catch (ex) {
+            return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
+        }
+    }
+
+    async VerifyCode(data: IVerifyCode): Promise<IResponse> {
+        try {
+            const response = await fetch(`${baseURL}/auth/verify-code`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const error: IApiError = await response.json();
+                return { 
+                    pt: { message: error.message, code: "Error" }, 
+                    en: { message: error.message, code: "Error" } 
+                };
+            }
+
+            return { 
+                pt: { message: "Senha atualizada com sucesso", code: "Success" }, 
+                en: { message: "Password updated successfully", code: "Success" } 
+            };
+        } catch (ex) {
+            return { pt: { message: `${ex}`, code: "Error" }, en: { message: `${ex}`, code: "Error" } };
         }
     }
 }
